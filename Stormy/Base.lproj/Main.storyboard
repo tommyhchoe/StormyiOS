@@ -35,8 +35,8 @@
                                         <constraint firstAttribute="width" constant="50" id="jWe-PE-sz1"/>
                                     </constraints>
                                 </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Towson, MD" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgn-O4-erH">
-                                    <rect key="frame" x="269" y="26" width="63" height="15"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Updating location..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgn-O4-erH">
+                                    <rect key="frame" x="251" y="26" width="98" height="15"/>
                                     <animations/>
                                     <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="12"/>
                                     <color key="textColor" white="1" alpha="0.70035021551724141" colorSpace="calibratedWhite"/>
@@ -160,6 +160,7 @@
                         </connections>
                     </refreshControl>
                     <connections>
+                        <outlet property="currentLocationLabel" destination="dgn-O4-erH" id="pj7-xQ-5Kq"/>
                         <outlet property="currentPrecipLabel" destination="Uoq-ir-Rbc" id="ej1-3I-PdR"/>
                         <outlet property="currentRangeLabel" destination="fLS-Pa-67K" id="ZBH-Dq-SQE"/>
                         <outlet property="currentTemperatureLabel" destination="l9V-uw-7IY" id="Obe-gn-4lg"/>

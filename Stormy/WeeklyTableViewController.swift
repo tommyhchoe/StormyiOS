@@ -14,29 +14,22 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
     @IBOutlet weak var currentWeatherIcon: UIImageView?
     @IBOutlet weak var currentRangeLabel: UILabel?
     @IBOutlet weak var currentPrecipLabel: UILabel?
+    @IBOutlet weak var currentLocationLabel: UILabel?
     
     private let forecastAPIKey = "cc487e3a84a1e5b692482a1b0f6078d2"
-    let coordinate: (lat: Double, long: Double) = (39.401496,-76.601913)
+    var latitude: Double?
+    var longitude: Double?
     
     var weeklyWeather: [DailyWeather] = []
     
     private var locationManager: CLLocationManager = CLLocationManager()
+    internal var currentLocation: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let status = CLLocationManager.authorizationStatus()
-        if (status == CLAuthorizationStatus.Restricted) || (status == CLAuthorizationStatus.Denied){
-            print("You are not able to use the location services.")
-        } else {
-            locationManager.delegate = self
-            if status == CLAuthorizationStatus.NotDetermined{
-                locationManager.requestWhenInUseAuthorization()
-            }
-        }
-        
+        getLocationFromUser()
         configView()
-        retrieveWeatherForecast()
     }
     
     func configView() {
@@ -56,7 +49,8 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
     }
 
     @IBAction func refreshWeather() {
-        retrieveWeatherForecast()
+        getLocationFromUser()
+        print("Refreshing weather...")
         refreshControl?.endRefreshing()
     }
     override func didReceiveMemoryWarning() {
@@ -126,20 +120,60 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
     func retrieveWeatherForecast(){
         
         let forecastService = ForecastService(APIkey: forecastAPIKey)
-        forecastService.getForecast(coordinate.lat, long: coordinate.long){
+        if let location = currentLocation{
+            latitude = location.coordinate.latitude
+            longitude = location.coordinate.longitude
+        } else{
+            latitude = 39.3931
+            longitude = 76.6094
+            print("Using default lat and long")
+        }
+        print("\(latitude) and \(longitude)")
+        forecastService.getForecast(latitude!, long: longitude!){
             (let forecast) in
             if let weatherForecast = forecast,
                 let currentWeather = weatherForecast.currentWeather{
                 dispatch_async(dispatch_get_main_queue()){
+                    if let location = self.currentLocation{
+                        let geocoder: CLGeocoder = CLGeocoder()
+                        geocoder.reverseGeocodeLocation(location, completionHandler: {
+                            (placemarks, error) in
+                            
+                            var addressString: String = ""
+                            var placemark: CLPlacemark!
+                            
+                            if error != nil || placemarks?.count == 0{
+                                print("There was an error getting city and state")
+                            }else{
+                                placemark = placemarks![0] as CLPlacemark
+                                
+                                if let locality = placemark.locality{
+                                    addressString += locality + ", "
+                                }
+                                
+                                if let subLocality = placemark.administrativeArea{
+                                    addressString += subLocality
+                                }
+                            }
+        
+                            self.currentLocationLabel?.text = "\(addressString)"
+                        })
+                    } else {
+                        self.currentLocationLabel?.text = "Unknown city and state"
+                    }
+                    
                     if let temperature = currentWeather.temperature{
                         self.currentTemperatureLabel?.text = "\(temperature)º"
                     }
+                    
                     if let precipProbability = currentWeather.precipProbability{
                         self.currentPrecipLabel?.text = "Rain: \(precipProbability)%"
                     }
+                    
                     if let icon = currentWeather.icon{
                         self.currentWeatherIcon?.image = icon
                     }
+                    
                     self.weeklyWeather = weatherForecast.weekly
                     if let highTemp = self.weeklyWeather.first?.maxTemperature,
                         let lowTemp = self.weeklyWeather.first?.minTemperature{
@@ -151,13 +185,32 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
             }
         }
     }
+    
+    func getLocationFromUser(){
+        let status = CLLocationManager.authorizationStatus()
+        if (status == CLAuthorizationStatus.Restricted) || (status == CLAuthorizationStatus.Denied){
+            print("You are not able to use the location services.")
+        } else {
+            locationManager.delegate = self
+            if status == CLAuthorizationStatus.NotDetermined{
+                locationManager.requestWhenInUseAuthorization()
+            }
+        }
+    }
+    
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        print("Authorization status has changed")
         manager.desiredAccuracy = kCLLocationAccuracyKilometer
         manager.requestLocation()
     }
-    
+
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("Received updates...")
+        currentLocation = locations.first
+        if currentLocation != nil {
+            print("location has been updated \(currentLocation)")
+            retrieveWeatherForecast()
+        }
     }
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {

@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 struct CurrentWeather {
     let temperature: Int?
     let humidity: Int?
