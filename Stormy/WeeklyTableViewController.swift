@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
 
-class WeeklyTableViewController: UITableViewController {
+class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegate {
     @IBOutlet weak var currentTemperatureLabel: UILabel?
     @IBOutlet weak var currentWeatherIcon: UIImageView?
     @IBOutlet weak var currentRangeLabel: UILabel?
@@ -16,11 +17,24 @@ class WeeklyTableViewController: UITableViewController {
     
     private let forecastAPIKey = "cc487e3a84a1e5b692482a1b0f6078d2"
     let coordinate: (lat: Double, long: Double) = (39.401496,-76.601913)
-
+    
     var weeklyWeather: [DailyWeather] = []
+    
+    private var locationManager: CLLocationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let status = CLLocationManager.authorizationStatus()
+        if (status == CLAuthorizationStatus.Restricted) || (status == CLAuthorizationStatus.Denied){
+            print("You are not able to use the location services.")
+        } else {
+            locationManager.delegate = self
+            if status == CLAuthorizationStatus.NotDetermined{
+                locationManager.requestWhenInUseAuthorization()
+            }
+        }
+        
         configView()
         retrieveWeatherForecast()
     }
@@ -87,7 +101,6 @@ class WeeklyTableViewController: UITableViewController {
         }
     }
     
-    
     //MARK: - Delegate Methods
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
@@ -137,8 +150,17 @@ class WeeklyTableViewController: UITableViewController {
                 }
             }
         }
-        
-        
     }
-
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        manager.desiredAccuracy = kCLLocationAccuracyKilometer
+        manager.requestLocation()
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("Received updates...")
+    }
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("error getting location!")
+    }
 }

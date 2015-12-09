@@ -36,5 +36,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This application needs access to your location information</string>
 </dict>
 </plist>
