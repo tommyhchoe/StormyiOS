@@ -16,7 +16,26 @@ struct CurrentWeather {
     let summary: String?
     var icon: UIImage? = UIImage(named: "default.png")
     
+    var isFahrenheit = true
+    
+    var convertedTemperatureScale: Int? {
+        get{
+            if let temperature = self.temperature{
+                if isFahrenheit == true{
+                    return self.temperature
+                }else{
+                    return (temperature - 32) * 5/9
+                }
+            }else{
+                return nil
+            }
+        }
+    }
+    
     init(weatherDictionary: [String: AnyObject]){
+        let defaults = NSUserDefaults.standardUserDefaults()
+        isFahrenheit = defaults.valueForKey("asFahrenheit") as! Bool
+        
         temperature = weatherDictionary["temperature"] as? Int
         if let humidityRaw = weatherDictionary["humidity"] as? Double{
             humidity = Int(humidityRaw * 100)
