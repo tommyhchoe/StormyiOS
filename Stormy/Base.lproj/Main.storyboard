@@ -139,7 +139,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Weekly" id="uEa-tu-v97">
-                        <barButtonItem key="rightBarButtonItem" title="Fº" id="jLr-qE-Cr7">
+                        <barButtonItem key="rightBarButtonItem" title="F" id="jLr-qE-Cr7">
                             <connections>
                                 <action selector="changeTemperatureScale:" destination="RdM-sO-XBS" id="VVh-jp-DdL"/>
                             </connections>
