@@ -28,11 +28,6 @@ class DailyWeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let defaults = NSUserDefaults.standardUserDefaults()
-        if let greeting = defaults.valueForKey("asFahrenheit"){
-            print(greeting)
-        }
-        
         configureView()
     }
     

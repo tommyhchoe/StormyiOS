@@ -237,7 +237,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Partly cloudy throughout the day" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1GR-ST-7xR">
-                                <rect key="frame" x="206" y="292" width="188" height="17"/>
+                                <rect key="frame" x="30" y="292" width="540" height="17"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="14"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -325,8 +325,10 @@
                             <constraint firstAttribute="trailingMargin" secondItem="wsP-KP-Uae" secondAttribute="trailing" constant="22" id="klV-BW-MqD"/>
                             <constraint firstItem="mKE-MP-ZrT" firstAttribute="centerX" secondItem="Qfi-X3-isd" secondAttribute="centerX" id="mV3-Fh-UOm"/>
                             <constraint firstItem="OMi-N5-B8h" firstAttribute="centerX" secondItem="cmW-v4-ECk" secondAttribute="centerX" id="msI-dF-qpt"/>
+                            <constraint firstItem="1GR-ST-7xR" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="30" id="rn2-RW-KlS"/>
                             <constraint firstItem="lQd-zD-F0L" firstAttribute="top" secondItem="1GR-ST-7xR" secondAttribute="bottom" constant="36" id="sKZ-Qq-Ed7"/>
                             <constraint firstItem="3Jr-EU-vH0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="22" id="tAG-lC-ka8"/>
+                            <constraint firstAttribute="trailing" secondItem="1GR-ST-7xR" secondAttribute="trailing" constant="30" id="ttZ-he-lQ0"/>
                             <constraint firstItem="1GR-ST-7xR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ueT-fr-r1L"/>
                             <constraint firstItem="1GR-ST-7xR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-32" id="uz7-gn-3iG"/>
                             <constraint firstItem="SgP-sH-bg7" firstAttribute="top" secondItem="lQd-zD-F0L" secondAttribute="bottom" constant="-23" id="xeg-Gm-SKi"/>

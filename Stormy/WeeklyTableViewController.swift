@@ -218,14 +218,14 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
     
     @IBAction func changeTemperatureScale(sender: AnyObject) {
         let rightBarItem = self.navigationItem.rightBarButtonItem!
-        if rightBarItem.title! == "F"{
+        if rightBarItem.title! == "Fº"{
             defaults.setValue(false, forKey: "asFahrenheit")
             defaults.synchronize()
-            rightBarItem.title = "C"
+            rightBarItem.title = "Cº"
         }else{
             defaults.setValue(true, forKey: "asFahrenheit")
             defaults.synchronize()
-            rightBarItem.title = "F"
+            rightBarItem.title = "Fº"
         }
         retrieveWeatherForecast()
     }
