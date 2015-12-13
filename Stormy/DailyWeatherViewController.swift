@@ -24,11 +24,15 @@ class DailyWeatherViewController: UIViewController {
     @IBOutlet weak var highTemperatureLabel: UILabel?
     @IBOutlet weak var precipitationLabel: UILabel?
     @IBOutlet weak var humidityLabel: UILabel?
-
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        if let greeting = defaults.valueForKey("asFahrenheit"){
+            print(greeting)
+        }
+        
         configureView()
     }
     
@@ -41,8 +45,8 @@ class DailyWeatherViewController: UIViewController {
             sunriseTimeLabel?.text = weather.sunriseTime
             sunsetTimeLabel?.text = weather.sunsetTime
             
-            if let lowTemp = weather.minTemperature,
-                let highTemp = weather.maxTemperature,
+            if let lowTemp = weather.convertedMinScale,
+                let highTemp = weather.convertedMaxScale,
                 let rain = weather.precipProbability,
                 let humidity = weather.humidity{
                     lowTemperatureLabel?.text = "\(lowTemp)º"
@@ -61,15 +65,12 @@ class DailyWeatherViewController: UIViewController {
                 NSFontAttributeName: buttonFont]
             UIBarButtonItem.appearance().setTitleTextAttributes(barButtonAttributesDictionary, forState: .Normal)
         }
-        
-
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
 
 

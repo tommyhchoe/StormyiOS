@@ -23,7 +23,40 @@ struct DailyWeather{
     var day: String?
     let dateFormatter = NSDateFormatter()
     
+    var isFahrenheit = true
+    
+    var convertedMaxScale: Int? {
+        get{
+            if let temperature = self.maxTemperature{
+                if isFahrenheit == true{
+                    return self.maxTemperature
+                }else{
+                    return (temperature - 32) * 5/9
+                }
+            }else{
+                return nil
+            }
+        }
+    }
+    
+    var convertedMinScale: Int? {
+        get{
+            if let temperature = self.minTemperature{
+                if isFahrenheit == true{
+                    return self.minTemperature
+                }else{
+                    return (temperature - 32) * 5/9
+                }
+            }else{
+                return nil
+            }
+        }
+    }
+    
     init(dailyWeatherDictionary: [String:AnyObject]){
+        let defaults = NSUserDefaults.standardUserDefaults()
+        isFahrenheit = defaults.valueForKey("asFahrenheit") as! Bool
+        
         maxTemperature = dailyWeatherDictionary["temperatureMax"] as? Int
         minTemperature = dailyWeatherDictionary["temperatureMin"] as? Int
         if let humidityFloat = dailyWeatherDictionary["humidity"] as? Double{

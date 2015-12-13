@@ -22,18 +22,22 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
     
     var weeklyWeather: [DailyWeather] = []
     
+    let defaults = NSUserDefaults.standardUserDefaults()
+    
     private var locationManager: CLLocationManager = CLLocationManager()
     internal var currentLocation: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        defaults.setValue(true, forKey: "asFahrenheit")
+        defaults.synchronize()
+        
         getLocationFromUser()
         configView()
     }
     
     func configView() {
-        
         //Setting the table view's row height
         tableView.rowHeight = 64
         //Setting the Background view
@@ -50,7 +54,6 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
 
     @IBAction func refreshWeather() {
         getLocationFromUser()
-        print("Refreshing weather...")
         refreshControl?.endRefreshing()
     }
     override func didReceiveMemoryWarning() {
@@ -76,7 +79,7 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
         let cell = tableView.dequeueReusableCellWithIdentifier("WeatherCell") as! DailyWeatherTableViewCell
         
         let dailyWeather = weeklyWeather[indexPath.row]
-        if let maxTemp = dailyWeather.maxTemperature{
+        if let maxTemp = dailyWeather.convertedMaxScale{
             cell.temperatureLabel.text = "\(maxTemp)º"
         }
         cell.weatherIcon.image = dailyWeather.icon
@@ -126,9 +129,8 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
         } else{
             latitude = 39.3931
             longitude = 76.6094
-            print("Using default lat and long")
         }
-        print("\(latitude) and \(longitude)")
+        
         forecastService.getForecast(latitude!, long: longitude!){
             (let forecast) in
             if let weatherForecast = forecast,
@@ -162,7 +164,7 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
                         self.currentLocationLabel?.text = "Unknown city and state"
                     }
                     
-                    if let temperature = currentWeather.temperature{
+                    if let temperature = currentWeather.convertedTemperatureScale{
                         self.currentTemperatureLabel?.text = "\(temperature)º"
                     }
                     
@@ -175,8 +177,8 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
                     }
                     
                     self.weeklyWeather = weatherForecast.weekly
-                    if let highTemp = self.weeklyWeather.first?.maxTemperature,
-                        let lowTemp = self.weeklyWeather.first?.minTemperature{
+                    if let highTemp = self.weeklyWeather.first?.convertedMaxScale,
+                        let lowTemp = self.weeklyWeather.first?.convertedMinScale{
                             self.currentRangeLabel?.text = "↑\(highTemp)↓\(lowTemp)"
                     }
                     self.tableView.reloadData()
@@ -199,21 +201,32 @@ class WeeklyTableViewController: UITableViewController, CLLocationManagerDelegat
     }
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        print("Authorization status has changed")
         manager.desiredAccuracy = kCLLocationAccuracyKilometer
         manager.requestLocation()
     }
 
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("Received updates...")
         currentLocation = locations.first
         if currentLocation != nil {
-            print("location has been updated \(currentLocation)")
             retrieveWeatherForecast()
         }
     }
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("error getting location!")
+    }
+    
+    @IBAction func changeTemperatureScale(sender: AnyObject) {
+        let rightBarItem = self.navigationItem.rightBarButtonItem!
+        if rightBarItem.title! == "F"{
+            defaults.setValue(false, forKey: "asFahrenheit")
+            defaults.synchronize()
+            rightBarItem.title = "C"
+        }else{
+            defaults.setValue(true, forKey: "asFahrenheit")
+            defaults.synchronize()
+            rightBarItem.title = "F"
+        }
+        retrieveWeatherForecast()
     }
 }
